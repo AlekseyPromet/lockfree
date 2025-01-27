@@ -5,10 +5,11 @@ import (
 	"sync"
 	"testing"
 
-	"AlekseyPromet/algo/lockfree/internal/cache"
-	"AlekseyPromet/algo/lockfree/internal/lfstack"
-	"AlekseyPromet/algo/lockfree/internal/lrucache"
-	"AlekseyPromet/algo/lockfree/internal/ringbuffer"
+	"github.com/AlekseyPromet/lockfree/internal/cache"
+	"github.com/AlekseyPromet/lockfree/internal/lfqueue"
+	"github.com/AlekseyPromet/lockfree/internal/lfstack"
+	"github.com/AlekseyPromet/lockfree/internal/lrucache"
+	"github.com/AlekseyPromet/lockfree/internal/ringbuffer"
 )
 
 func BenchmarkNewLockFreeStack(b *testing.B) {
@@ -119,6 +120,16 @@ func TestRunLockFreeStack(t *testing.T) {
 
 func TestRunLRUCache(t *testing.T) {
 	RunLockFreeCache()
+}
+
+func BenchmarkNewQueue(b *testing.B) {
+	q := lfqueue.NewLockFreeQueue()
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		q.Push(i)
+		q.Pop()
+	}
 }
 
 func BenchmarkMain(b *testing.B) {

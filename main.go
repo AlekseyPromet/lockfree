@@ -1,10 +1,12 @@
 package main
 
 import (
-	"AlekseyPromet/algo/lockfree/internal/cache"
-	"AlekseyPromet/algo/lockfree/internal/lfstack"
-	"AlekseyPromet/algo/lockfree/internal/lrucache"
 	"fmt"
+
+	"github.com/AlekseyPromet/lockfree/internal/cache"
+	"github.com/AlekseyPromet/lockfree/internal/lfqueue"
+	"github.com/AlekseyPromet/lockfree/internal/lfstack"
+	"github.com/AlekseyPromet/lockfree/internal/lrucache"
 )
 
 func RunLockFreeStack() {
@@ -72,6 +74,25 @@ func RunCache() {
 		fmt.Println("key:", key, "value:", value)
 		return true
 	})
+}
+
+func RunLockFreeQueue() {
+	q := lfqueue.NewLockFreeQueue()
+
+	// Добавляем элементы в очередь
+	q.Enqueue(1)
+	q.Enqueue(2)
+	q.Enqueue(3)
+
+	// Извлекаем элементы из очереди
+	for i := 0; i < 4; i++ {
+		val, ok := q.Dequeue()
+		if ok {
+			println(val.(int))
+		} else {
+			println("Queue is empty")
+		}
+	}
 }
 
 func main() {
