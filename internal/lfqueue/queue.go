@@ -26,8 +26,8 @@ func NewLockFreeQueue() *LockFreeQueue {
 	}
 }
 
-// Enqueue добавляет элемент в очередь
-func (q *LockFreeQueue) Enqueue(value interface{}) {
+// Push добавляет элемент в очередь
+func (q *LockFreeQueue) Push(value interface{}) {
 	newNode := &Node{value: value}
 
 	for {
@@ -51,8 +51,8 @@ func (q *LockFreeQueue) Enqueue(value interface{}) {
 	}
 }
 
-// Dequeue извлекает элемент из очереди
-func (q *LockFreeQueue) Dequeue() (interface{}, bool) {
+// Pop извлекает элемент из очереди
+func (q *LockFreeQueue) Pop() (interface{}, bool) {
 	for {
 		head := atomic.LoadPointer(&q.head)
 		tail := atomic.LoadPointer(&q.tail)

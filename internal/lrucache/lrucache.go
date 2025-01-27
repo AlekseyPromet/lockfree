@@ -11,9 +11,10 @@ import (
 // LRUCache представляет собой lock-free LRU-кэш.
 type LRUCache struct {
 	capacity int
-	cache    map[string]*list.Element
-	list     *list.List
-	mu       sync.Mutex
+	// cache двухсторониий связанный список
+	cache map[string]*list.Element
+	list  *list.List
+	mu    sync.Mutex
 }
 
 // entry представляет элемент кэша.
@@ -58,8 +59,8 @@ func (l *LRUCache) Set(key string, value interface{}) {
 		if l.list.Len() >= l.capacity {
 			last := l.list.Back()
 			if last != nil {
-				delete(l.cache, last.Value.(*entry).key)
-				l.list.Remove(last)
+				// Освобождаем память для удалённого элемента
+				l.remove(key, elem)
 			}
 		}
 		// Добавляем новый элемент
@@ -77,9 +78,16 @@ func (l *LRUCache) Pop(key string) (*entry, error) {
 
 	if elem, ok := l.cache[key]; ok {
 		value := atomic.LoadPointer(&elem.Value.(*entry).value)
-		delete(l.cache, key)
-		l.list.Remove(elem)
+		// Освобождаем память для удалённого элемента
+		l.remove(key, elem)
 		return &entry{key: key, value: value}, nil
 	}
 	return nil, ErrKeyNotFound
+}
+
+func (l *LRUCache) remove(key string, elem *list.Element) {
+	l.mu.Lock()
+	delete(l.cache, key)
+	l.list.Remove(elem)
+	l.mu.Unlock()
 }

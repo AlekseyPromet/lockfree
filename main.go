@@ -80,13 +80,13 @@ func RunLockFreeQueue() {
 	q := lfqueue.NewLockFreeQueue()
 
 	// Добавляем элементы в очередь
-	q.Enqueue(1)
-	q.Enqueue(2)
-	q.Enqueue(3)
+	q.Push(1)
+	q.Push(2)
+	q.Push(3)
 
 	// Извлекаем элементы из очереди
 	for i := 0; i < 4; i++ {
-		val, ok := q.Dequeue()
+		val, ok := q.Pop()
 		if ok {
 			println(val.(int))
 		} else {
